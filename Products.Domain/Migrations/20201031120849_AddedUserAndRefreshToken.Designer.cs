@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Products.Domain.AppContext;
 
 namespace Products.Domain.Migrations
 {
     [DbContext(typeof(ProductContext))]
-    partial class ProductContextModelSnapshot : ModelSnapshot
+    [Migration("20201031120849_AddedUserAndRefreshToken")]
+    partial class AddedUserAndRefreshToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,9 +30,6 @@ namespace Products.Domain.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Role")
                         .HasColumnType("nvarchar(max)");
 
@@ -40,32 +39,6 @@ namespace Products.Domain.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("675a2bc2-9ee4-413f-9eb2-71cfcf65d0ed"),
-                            Email = "admin@yahoo.com",
-                            Password = "111111",
-                            Role = "Admin",
-                            Username = "admin"
-                        },
-                        new
-                        {
-                            Id = new Guid("0ec74a29-bd98-4e1a-a70b-1fafb9900cf5"),
-                            Email = "user@gmail.com",
-                            Password = "222222",
-                            Role = "User",
-                            Username = "user"
-                        },
-                        new
-                        {
-                            Id = new Guid("1cb0962e-9d7b-4a71-9533-24ce9929c608"),
-                            Email = "stephen@hotmail.com",
-                            Password = "333333",
-                            Role = "User",
-                            Username = "stephen"
-                        });
                 });
 
             modelBuilder.Entity("Products.Domain.Product", b =>
@@ -93,7 +66,7 @@ namespace Products.Domain.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("463619b6-8302-4415-bec5-42f8ebebad82"),
+                            Id = new Guid("40fbdcdd-9af7-4faa-8986-398b75841a90"),
                             Category = "Phones & Tablets",
                             Description = "Lastest Iphone 11 Pro, Now available for sale",
                             Name = "Iphone 11 Pro",
@@ -101,19 +74,11 @@ namespace Products.Domain.Migrations
                         },
                         new
                         {
-                            Id = new Guid("ab14c219-46b5-45f0-a396-8c56808261e4"),
+                            Id = new Guid("ed63e18a-1f8c-42c5-bc45-1b67cfc2e0fd"),
                             Category = "Phones & Tablets",
                             Description = "New Umidigi Smartphone, very affordable",
                             Name = "Umidigi A5 Pro",
                             Price = 49000m
-                        },
-                        new
-                        {
-                            Id = new Guid("f37ac86c-18f6-4d06-9904-787e1120a98a"),
-                            Category = "Phones & Tablets",
-                            Description = "Latest tchno andriod phone",
-                            Name = "Techo Hot 8 lite",
-                            Price = 38000m
                         });
                 });
 

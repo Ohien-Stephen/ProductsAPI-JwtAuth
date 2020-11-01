@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,9 +11,9 @@ using Products.Services;
 
 namespace Products.Controllers
 {
-    [EnableCors("AnotherPolicy")]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
+    [EnableCors("AnotherPolicy"), Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly IProductRepository ProducctRepo;
@@ -66,7 +67,6 @@ namespace Products.Controllers
             {
                 return BadRequest();
             }
-
             var productFrmRepo = await ProducctRepo.GetProductById(id);
 
             if (productFrmRepo != null)
