@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Products.Domain;
 using Products.Models;
 using Products.Utilities.JwtAuthentication;
 using System;
@@ -56,9 +57,9 @@ namespace Products.Utilities
 
         }
 
-        public RefreshTokenModel GenerateRefreshToken()
+        public RefreshToken GenerateRefreshToken()
         {
-            var refreshToken = new RefreshTokenModel();
+            var refreshToken = new RefreshToken();
             var randomNumber = new byte[32];
             using (var randomNumberGenerator = RandomNumberGenerator.Create())
             {

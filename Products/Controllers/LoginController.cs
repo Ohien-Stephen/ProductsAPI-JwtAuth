@@ -36,7 +36,7 @@ namespace Products.Controllers
             var user = await applicationUserRepository.Login(login.Username, login.Password);
             if (user == null)
             {
-                return Unauthorized();
+                return Unauthorized("Invalid Username and Password");
             }
             var userModel = new UserModel()
             {
@@ -47,15 +47,7 @@ namespace Products.Controllers
             };
             var refreshToken = jwtAuthenticationManager.GenerateRefreshToken();
 
-            var data = new RefreshToken()
-            {
-                Id = refreshToken.Id,
-                UserId = user.Id,
-                Token = refreshToken.Token,
-                Expiry = refreshToken.Expiry
-
-            };
-            await refreshTokenRepository.Add(data);
+            user.RefreshTokens.Add(refreshToken);
             await refreshTokenRepository.SaveChanges();
 
             var response = new AuthenticationModel()

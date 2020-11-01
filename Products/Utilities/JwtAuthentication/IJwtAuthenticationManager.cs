@@ -1,4 +1,5 @@
-﻿using Products.Models;
+﻿using Products.Domain;
+using Products.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Products.Utilities.JwtAuthentication
     public interface IJwtAuthenticationManager
     {
         string GenerateAccessToken(UserModel user);
-        RefreshTokenModel GenerateRefreshToken();
+        RefreshToken GenerateRefreshToken();
     }
 }
