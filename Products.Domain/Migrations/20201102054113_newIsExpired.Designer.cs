@@ -10,8 +10,8 @@ using Products.Domain.AppContext;
 namespace Products.Domain.Migrations
 {
     [DbContext(typeof(ProductContext))]
-    [Migration("20201031120849_AddedUserAndRefreshToken")]
-    partial class AddedUserAndRefreshToken
+    [Migration("20201102054113_newIsExpired")]
+    partial class newIsExpired
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,6 +30,9 @@ namespace Products.Domain.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Role")
                         .HasColumnType("nvarchar(max)");
 
@@ -39,6 +42,32 @@ namespace Products.Domain.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("7d4e711b-5c58-4f02-ae06-b6651c540f41"),
+                            Email = "admin@yahoo.com",
+                            Password = "111111",
+                            Role = "Admin",
+                            Username = "admin"
+                        },
+                        new
+                        {
+                            Id = new Guid("fc7c6066-67b4-481c-9460-40c3dbf976b4"),
+                            Email = "user@gmail.com",
+                            Password = "222222",
+                            Role = "User",
+                            Username = "user"
+                        },
+                        new
+                        {
+                            Id = new Guid("6f53676b-b67c-4e36-838e-a4b0195544cd"),
+                            Email = "stephen@hotmail.com",
+                            Password = "333333",
+                            Role = "User",
+                            Username = "stephen"
+                        });
                 });
 
             modelBuilder.Entity("Products.Domain.Product", b =>
@@ -66,7 +95,7 @@ namespace Products.Domain.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("40fbdcdd-9af7-4faa-8986-398b75841a90"),
+                            Id = new Guid("f90b6b88-ef9b-4988-99fe-cb922bf70678"),
                             Category = "Phones & Tablets",
                             Description = "Lastest Iphone 11 Pro, Now available for sale",
                             Name = "Iphone 11 Pro",
@@ -74,30 +103,40 @@ namespace Products.Domain.Migrations
                         },
                         new
                         {
-                            Id = new Guid("ed63e18a-1f8c-42c5-bc45-1b67cfc2e0fd"),
+                            Id = new Guid("7c6f2ee8-b6a1-4aa6-91d0-46e07e274151"),
                             Category = "Phones & Tablets",
                             Description = "New Umidigi Smartphone, very affordable",
                             Name = "Umidigi A5 Pro",
                             Price = 49000m
+                        },
+                        new
+                        {
+                            Id = new Guid("bd917d4d-8ce9-49fd-9d7f-57d02f0f77f1"),
+                            Category = "Phones & Tablets",
+                            Description = "Latest tchno andriod phone",
+                            Name = "Techo Hot 8 lite",
+                            Price = 38000m
                         });
                 });
 
             modelBuilder.Entity("Products.Domain.RefreshToken", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<Guid>("ApplicationUserId")
+                    b.Property<Guid?>("ApplicationUserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("Expiry")
+                    b.Property<DateTime>("Expires")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Token")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -110,9 +149,7 @@ namespace Products.Domain.Migrations
                 {
                     b.HasOne("Products.Domain.ApplicationUser", "ApplicationUser")
                         .WithMany("RefreshTokens")
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ApplicationUserId");
                 });
 #pragma warning restore 612, 618
         }

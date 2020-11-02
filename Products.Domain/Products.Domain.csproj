@@ -7,6 +7,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20200507041629_InitiallyCreate.cs" />
     <Compile Remove="Migrations\20200507041629_InitiallyCreate.Designer.cs" />
+    <Compile Remove="Migrations\20201102053937_newIsExpired.cs" />
+    <Compile Remove="Migrations\20201102053937_newIsExpired.Designer.cs" />
   </ItemGroup> 
 
   <ItemGroup>

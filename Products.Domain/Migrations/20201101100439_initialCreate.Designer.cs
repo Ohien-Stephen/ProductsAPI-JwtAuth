@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Products.Domain.AppContext;
 
 namespace Products.Domain.Migrations
 {
     [DbContext(typeof(ProductContext))]
-    partial class ProductContextModelSnapshot : ModelSnapshot
+    [Migration("20201101100439_initialCreate")]
+    partial class initialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,7 +46,7 @@ namespace Products.Domain.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("e2855d89-8ca3-4728-a712-c0c16cee6bd2"),
+                            Id = new Guid("d2fcc8c8-c47c-42f4-878c-952ca33e44fb"),
                             Email = "admin@yahoo.com",
                             Password = "111111",
                             Role = "Admin",
@@ -52,7 +54,7 @@ namespace Products.Domain.Migrations
                         },
                         new
                         {
-                            Id = new Guid("38d02f16-345b-40be-83e2-abd63de13f52"),
+                            Id = new Guid("b0bea701-844b-432e-892b-c5cd575bb775"),
                             Email = "user@gmail.com",
                             Password = "222222",
                             Role = "User",
@@ -60,7 +62,7 @@ namespace Products.Domain.Migrations
                         },
                         new
                         {
-                            Id = new Guid("1dc9ee61-24f4-46d1-97e8-fe6e230a6af4"),
+                            Id = new Guid("3a3571e0-be0d-4228-a214-c52bbbc2ae71"),
                             Email = "stephen@hotmail.com",
                             Password = "333333",
                             Role = "User",
@@ -93,7 +95,7 @@ namespace Products.Domain.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("951ea4b8-4770-4f15-a063-b8efa1a90a19"),
+                            Id = new Guid("fc815678-260b-4f16-8fc0-6e53854f3228"),
                             Category = "Phones & Tablets",
                             Description = "Lastest Iphone 11 Pro, Now available for sale",
                             Name = "Iphone 11 Pro",
@@ -101,7 +103,7 @@ namespace Products.Domain.Migrations
                         },
                         new
                         {
-                            Id = new Guid("59c49ad1-7aa9-4aad-a74c-395a56c3178c"),
+                            Id = new Guid("ad83ba06-b2d8-4837-b68c-51ff40a267f1"),
                             Category = "Phones & Tablets",
                             Description = "New Umidigi Smartphone, very affordable",
                             Name = "Umidigi A5 Pro",
@@ -109,7 +111,7 @@ namespace Products.Domain.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c78555d2-b597-4645-93f4-2004e417d051"),
+                            Id = new Guid("a14e6ba5-1752-4df9-890e-fffdb6f158c0"),
                             Category = "Phones & Tablets",
                             Description = "Latest tchno andriod phone",
                             Name = "Techo Hot 8 lite",
@@ -127,11 +129,14 @@ namespace Products.Domain.Migrations
                     b.Property<Guid>("ApplicationUserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("Expires")
+                    b.Property<DateTime>("Expiry")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Token")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 

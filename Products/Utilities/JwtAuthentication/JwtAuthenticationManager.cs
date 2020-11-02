@@ -4,13 +4,10 @@ using Products.Domain;
 using Products.Models;
 using Products.Utilities.JwtAuthentication;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Products.Utilities
 {
@@ -43,10 +40,11 @@ namespace Products.Utilities
                     SigningCredentials = credentials,
                     Issuer = config["Jwt:Issuer"],
                     Audience = config["Jwt:Audience"],
-                    Expires = DateTime.UtcNow.AddSeconds(15)
+                    IssuedAt = DateTime.UtcNow,
+                    Expires = DateTime.UtcNow.AddSeconds(30)
                 };
                 var token = tokenHandler.CreateToken(tokenDescriptor);
-                
+
                 if (token != null)
                 {
                     return tokenHandler.WriteToken(token);
@@ -59,16 +57,18 @@ namespace Products.Utilities
 
         public RefreshToken GenerateRefreshToken()
         {
-            var refreshToken = new RefreshToken();
             var randomNumber = new byte[32];
             using (var randomNumberGenerator = RandomNumberGenerator.Create())
             {
                 randomNumberGenerator.GetBytes(randomNumber);
-                refreshToken.Token = Convert.ToBase64String(randomNumber);
-            }
-            refreshToken.Expiry = DateTime.UtcNow.AddDays(30);
 
-            return refreshToken;
+                return new RefreshToken
+                {
+                    Token = Convert.ToBase64String(randomNumber),
+                    Expires = DateTime.UtcNow.AddDays(30)
+                };
+            }
+
         }
     }
 }

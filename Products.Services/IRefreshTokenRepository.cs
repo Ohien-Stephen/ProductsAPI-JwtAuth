@@ -9,9 +9,10 @@ namespace Products.Services
 {
     public interface IRefreshTokenRepository
     {
-        Task<RefreshToken> Get(string id);
+        Task<RefreshToken> GetUser(string refreshToken);
+        Task<RefreshToken> Get(int id);
         Task Add(RefreshToken token);
-        Task Delete(string id);
+        Task Delete(int id);
         Task<bool> SaveChanges();
 
     }

@@ -10,8 +10,8 @@ using Products.Domain.AppContext;
 namespace Products.Domain.Migrations
 {
     [DbContext(typeof(ProductContext))]
-    [Migration("20201031122850_AddedData")]
-    partial class AddedData
+    [Migration("20201102053311_new")]
+    partial class @new
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -46,7 +46,7 @@ namespace Products.Domain.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("675a2bc2-9ee4-413f-9eb2-71cfcf65d0ed"),
+                            Id = new Guid("a5308b51-5900-48d0-a8c3-bd278d58659d"),
                             Email = "admin@yahoo.com",
                             Password = "111111",
                             Role = "Admin",
@@ -54,7 +54,7 @@ namespace Products.Domain.Migrations
                         },
                         new
                         {
-                            Id = new Guid("0ec74a29-bd98-4e1a-a70b-1fafb9900cf5"),
+                            Id = new Guid("22bd1b08-5b42-4d11-ab16-48520922dc4b"),
                             Email = "user@gmail.com",
                             Password = "222222",
                             Role = "User",
@@ -62,7 +62,7 @@ namespace Products.Domain.Migrations
                         },
                         new
                         {
-                            Id = new Guid("1cb0962e-9d7b-4a71-9533-24ce9929c608"),
+                            Id = new Guid("8382e91b-f11d-4653-a96a-3739618a3f6a"),
                             Email = "stephen@hotmail.com",
                             Password = "333333",
                             Role = "User",
@@ -95,7 +95,7 @@ namespace Products.Domain.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("463619b6-8302-4415-bec5-42f8ebebad82"),
+                            Id = new Guid("d36a202c-a440-4632-b967-df1c69308240"),
                             Category = "Phones & Tablets",
                             Description = "Lastest Iphone 11 Pro, Now available for sale",
                             Name = "Iphone 11 Pro",
@@ -103,7 +103,7 @@ namespace Products.Domain.Migrations
                         },
                         new
                         {
-                            Id = new Guid("ab14c219-46b5-45f0-a396-8c56808261e4"),
+                            Id = new Guid("c6a2270d-1e92-48d0-9b23-a82b81c5a249"),
                             Category = "Phones & Tablets",
                             Description = "New Umidigi Smartphone, very affordable",
                             Name = "Umidigi A5 Pro",
@@ -111,7 +111,7 @@ namespace Products.Domain.Migrations
                         },
                         new
                         {
-                            Id = new Guid("f37ac86c-18f6-4d06-9904-787e1120a98a"),
+                            Id = new Guid("52b45712-f3b4-4095-abf8-7d50b2dc8f81"),
                             Category = "Phones & Tablets",
                             Description = "Latest tchno andriod phone",
                             Name = "Techo Hot 8 lite",
@@ -121,20 +121,19 @@ namespace Products.Domain.Migrations
 
             modelBuilder.Entity("Products.Domain.RefreshToken", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<Guid>("ApplicationUserId")
+                    b.Property<Guid?>("ApplicationUserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("Expiry")
+                    b.Property<DateTime>("Expires")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Token")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -147,9 +146,7 @@ namespace Products.Domain.Migrations
                 {
                     b.HasOne("Products.Domain.ApplicationUser", "ApplicationUser")
                         .WithMany("RefreshTokens")
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ApplicationUserId");
                 });
 #pragma warning restore 612, 618
         }

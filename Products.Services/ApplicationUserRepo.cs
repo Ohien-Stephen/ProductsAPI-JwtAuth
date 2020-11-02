@@ -23,8 +23,12 @@ namespace Products.Services
 
         public async Task<ApplicationUser> Login(string username, string password)
         {
-            return await context.Users.AsNoTracking().
-                Where(x => x.Username == username && x.Password == password).FirstOrDefaultAsync();
+            var user = await context.Users.AsNoTracking().
+                Where(x => x.Username == username && x.Password == password)
+                .Include(x=>x.RefreshTokens)
+                .FirstOrDefaultAsync();
+            return user;
+            
         }
         public async Task<ApplicationUser> Get(Guid id)
         {

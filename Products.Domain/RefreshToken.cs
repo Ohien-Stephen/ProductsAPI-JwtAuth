@@ -6,10 +6,11 @@ namespace Products.Domain
 {
     public class RefreshToken
     {
-        public string Id { get; set; }
-        public Guid UserId { get; set; }
+        public int Id { get; set; }
         public string Token { get; set; }
-        public DateTime Expiry { get; set; }
+        public bool isExpired => DateTime.UtcNow >= Expires;
+        //public bool isActive { get; set; }
+        public DateTime Expires { get; set; }
         public Guid ApplicationUserId { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }
     }
