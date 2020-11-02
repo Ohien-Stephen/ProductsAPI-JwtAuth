@@ -1,5 +1,6 @@
 ﻿using Products.Domain;
 using Products.Models;
+using System.Threading.Tasks;
 
 namespace Products.Utilities.JwtAuthentication
 {

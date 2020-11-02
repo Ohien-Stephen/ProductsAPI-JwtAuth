@@ -65,7 +65,8 @@ namespace Products.Utilities
                 return new RefreshToken
                 {
                     Token = Convert.ToBase64String(randomNumber),
-                    Expires = DateTime.UtcNow.AddDays(30)
+                    //Expires = DateTime.UtcNow.AddDays(30),
+                    Expires = DateTime.UtcNow.AddMinutes(10)
                 };
             }
 

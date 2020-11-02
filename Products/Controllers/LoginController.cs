@@ -54,10 +54,6 @@ namespace Products.Controllers
 
                 response.AccessToken = jwtAuthenticationManager.GenerateAccessToken(userModel);
 
-                var result2 = user.RefreshTokens.Where(x => x.isExpired == false).Count();
-
-                var result = user.RefreshTokens.Any(x => x.isExpired == false);
-
 
                 if (user.RefreshTokens.Any(x => x.isExpired == false))
                 {
@@ -67,31 +63,13 @@ namespace Products.Controllers
                 }
                 else
                 {
-                    var rToken = jwtAuthenticationManager.GenerateRefreshToken();
+                    var newRefreshToken = jwtAuthenticationManager.GenerateRefreshToken();
 
-                    try
-                    {
-                        //user.RefreshTokens.Add(rToken);
-                        rToken.ApplicationUserId = user.Id;
-                        await refreshTokenRepository.Add(rToken);
-                    }
-                    catch (Exception ex)
-                    {
+                    newRefreshToken.ApplicationUserId = user.Id;
+                    await refreshTokenRepository.Add(newRefreshToken);
+                    await refreshTokenRepository.SaveChanges();
 
-                        throw;
-                    }
-
-
-                    try
-                    {
-                        await refreshTokenRepository.SaveChanges();
-                    }
-                    catch (Exception ex)
-                    {
-
-                        Debug.WriteLine(ex);
-                    }
-                    response.RefreshToken = rToken.Token;
+                    response.RefreshToken = newRefreshToken.Token;
                 }
                 if (response != null)
                 {
@@ -105,57 +83,88 @@ namespace Products.Controllers
         }
 
         [HttpPost("/RefreshToken")]
-        public async Task<IActionResult> RefreshToken([FromBody] RefreshModel model)
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshModel token)
         {
-            var token = await refreshTokenRepository.GetUser(model.RefreshToken);
-            if (token != null)
+            var refreshToken = await refreshTokenRepository.Get(token.RefreshToken);
+
+            if (refreshToken != null && refreshToken.ApplicationUser != null)
             {
-                return Ok("GOOD TO GO");
+                if (refreshToken.isExpired)
+                {
+                    return Unauthorized("Please Login");
+
+                    //var newRefreshToken = jwtAuthenticationManager.GenerateRefreshToken();
+                    //newRefreshToken.ApplicationUserId = userModel.UserId;
+                    //await refreshTokenRepository.Add(newRefreshToken);
+                    //await refreshTokenRepository.SaveChanges();
+                    //response.RefreshToken = newRefreshToken.Token;
+                }
+
+                var userModel = new UserModel()
+                {
+                    UserId = refreshToken.ApplicationUser.Id,
+                    Username = refreshToken.ApplicationUser.Username,
+                    Email = refreshToken.ApplicationUser.Email,
+                    Role = refreshToken.ApplicationUser.Role
+                };
+
+                var response = new AuthenticationModel
+                {
+                    User = userModel,
+                    AccessToken = jwtAuthenticationManager.GenerateAccessToken(userModel),
+                    RefreshToken = token.RefreshToken
+                };
+
+                if (response != null)
+                {
+                    return Ok(response);
+                }
             }
-            return Unauthorized();
+
+            return Unauthorized("Please Login");
 
         }
 
         private ApplicationUser GetUserFromAccessToken(string accessToken)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            if (tokenHandler.CanReadToken(accessToken))
-            {
-                var tokenKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["Jwt:Secret_Key"]));
-                var tokenValidationParameters = new TokenValidationParameters()
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = tokenKey,
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidIssuer = configuration["Jwt:Issuer"],
-                    ValidAudience = configuration["Jwt:Audience"],
-                    ClockSkew = TimeSpan.Zero
-                };
+            //var tokenHandler = new JwtSecurityTokenHandler();
+            //if (tokenHandler.CanReadToken(accessToken))
+            //{
+            //    var tokenKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["Jwt:Secret_Key"]));
+            //    var tokenValidationParameters = new TokenValidationParameters()
+            //    {
+            //        ValidateIssuerSigningKey = true,
+            //        IssuerSigningKey = tokenKey,
+            //        ValidateIssuer = false,
+            //        ValidateAudience = false,
+            //        ValidIssuer = configuration["Jwt:Issuer"],
+            //        ValidAudience = configuration["Jwt:Audience"],
+            //        ClockSkew = TimeSpan.Zero
+            //    };
 
-                try
-                {
-                    var principal = tokenHandler.ValidateToken(
-                    accessToken,
-                    tokenValidationParameters,
-                    out SecurityToken securityToken
-                    ).Clone();
+            //    try
+            //    {
+            //        var principal = tokenHandler.ValidateToken(
+            //        accessToken,
+            //        tokenValidationParameters,
+            //        out SecurityToken securityToken
+            //        ).Clone();
 
-                    JwtSecurityToken jwtSecurityToken = securityToken as JwtSecurityToken;
+            //        JwtSecurityToken jwtSecurityToken = securityToken as JwtSecurityToken;
 
-                    if (jwtSecurityToken != null && jwtSecurityToken.Header.Alg.
-                        Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        var userId = principal.Identity.Name;
-                        return applicationUserRepository.Get(Guid.Parse(userId)).GetAwaiter().GetResult();
-                    }
-                }
-                catch (Exception ex)
-                {
+            //        if (jwtSecurityToken != null && jwtSecurityToken.Header.Alg.
+            //            Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+            //        {
+            //            var userId = principal.Identity.Name;
+            //            return applicationUserRepository.Get(Guid.Parse(userId)).GetAwaiter().GetResult();
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
 
-                    Debug.WriteLine(ex.Message);
-                }
-            }
+            //        Debug.WriteLine(ex.Message);
+            //    }
+            //}
 
 
             return null;

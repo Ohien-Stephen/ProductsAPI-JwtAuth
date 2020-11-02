@@ -18,13 +18,7 @@ namespace Products.Services
             context = _context;
         }
 
-        public async Task<RefreshToken> Get(int id)
-        {
-            return await context.RefreshTokens.AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == id);
-        }
-
-        public async Task<RefreshToken> GetUser(string refreshToken)
+        public async Task<RefreshToken> Get(string refreshToken)
         {
             var user = await context.RefreshTokens.Include(x => x.ApplicationUser)
                 .FirstOrDefaultAsync(x => x.Token == refreshToken);
